@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "aamar.tech"
+    "aamartechllc.com"
+    "cems-autopartsshow.com"
+    "cems-powerseries.com"
+    "cems-textech.com"
+    "cems-textileseries.com"
+    "dhakamotorshow.com"
+    "textech-bangladesh.com"
+    "textech-brazil.com"
+    "textech-morocco.com"
+    "textech-srilanka.com"
+    "bd.cems-yarnandfabric.com"
+    "br.cems-yarnandfabric.com"
+    "cems-solarexpo.com"
+    "dhakabikeshow.com"
+    "lk.cems-yarnandfabric.com"
+    "morocco-sourcingshow.com"
+    "winter.bd-cemsyarnandfabric.com"
+    "bd.cems-dyechem.com"
+    "bd-lighting.com"
+    "br.cems-dyechem.com"
+    "build-bangladesh.com"
+    "cems-commercialautoshow.com"
+    "cems-dyechem.com"
+    "cems-global.com"
+    "cems-lightingexpo.com"
+    "cems-realestateexpo.com"
+    "e-registrations.com"
+    "e-registrations.tradazine.com"
+)
+
+# Function to convert the date format
+format_date() {
+    # Convert date to the desired format (e.g., "February 30, 2024")
+    date -d "$1" +"%B %d, %Y" 2>/dev/null
+}
+
+# Loop through each domain
+for domain in "${domains[@]}"; do
+    # Get WHOIS information for the domain
+    whois_output=$(whois "$domain")
+
+    # Extract expiration date using grep and awk (adjusting for different formats)
+    expiration_date=$(echo "$whois_output" | grep -i 'Expiration Date\|Registry Expiry Date' | awk -F': ' '{print $2}' | head -n 1)
+
+    # Check if the expiration date was found
+    if [ -z "$expiration_date" ]; then
+        echo "Domain: $domain"
+        echo "Expiration Date: Not Found"
+        echo "---------------------------------"
+        continue
+    fi
+
+    # Format the expiration date
+    formatted_date=$(format_date "$expiration_date")
+
+    # Check if the formatted date is valid
+    if [ -z "$formatted_date" ]; then
+        formatted_date="Invalid date format"
+    fi
+
+    # Print the domain and its formatted expiration date
+    echo "Domain: $domain"
+    echo "Expiration Date: $formatted_date"
+    echo "---------------------------------"
+done
