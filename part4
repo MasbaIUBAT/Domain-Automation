@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "foodoclock.com.bd"
+    "shebangladesh.com"
+    "quikorder.app"
+    "gosourcing.llc"
+    "connect2school.net"
+    "eemab.com"
+    "gamedin.net"
+    "cems-printingpackaging.com"
+    "cemsonline.com"
+    "supernova365.com"
+    "letskonnect.net"
+    "cems-motorshow.com"
+    "viewbangladesh.com"
+    "cemsonline.org"
+    "cemssuite360.com"
+    "boimelalive.com"
+    "cems-buildbd.com"
+    "globalsourcingshow.com"
+    "bangladeshmotorsports.com"
+    "cemssuite.com"
+    "meditexonline.com"
+    "beautyfitnessfair.com"
+    "techtaze.com"
+    "amsl.com.bd"
+    "askndelivers.com"
+    "cems-denimshow.com"
+    "pharmabangladesh.com"
+    "cems-meditex.com"
+    "goproperty365.com"
+    "cems-foodpack.com"
+    "digidaybd.com"
+    "hometex-morocco.com"
+    "hometex-srilanka.com"
+    "hometex-bangladesh.com"
+    "hometex-brazil.com"
+)
+
+# Function to convert the date format
+format_date() {
+    # Convert date to the desired format (e.g., "February 30, 2024")
+    date -d "$1" +"%B %d, %Y" 2>/dev/null
+}
+
+# Loop through each domain
+for domain in "${domains[@]}"; do
+    # Get WHOIS information for the domain
+    whois_output=$(whois "$domain")
+
+    # Extract expiration date using grep and awk (adjusting for different formats)
+    expiration_date=$(echo "$whois_output" | grep -i 'Expiration Date\|Registry Expiry Date' | awk -F': ' '{print $2}' | head -n 1)
+
+    # Check if the expiration date was found
+    if [ -z "$expiration_date" ]; then
+        echo "Domain: $domain"
+        echo "Expiration Date: Not Found"
+        echo "---------------------------------"
+        continue
+    fi
+
+    # Format the expiration date
+    formatted_date=$(format_date "$expiration_date")
+
+    # Check if the formatted date is valid
+    if [ -z "$formatted_date" ]; then
+        formatted_date="Invalid date format"
+    fi
+
+    # Print the domain and its formatted expiration date
+    echo "Domain: $domain"
+    echo "Expiration Date: $formatted_date"
+    echo "---------------------------------"
+done
