@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "cardzin.com"
+    "cems-hometex.com"
+    "classiads.com"
+    "exhibitor-pass.com"
+    "lk.cems-dyechem.com"
+    "powerbangladesh.com"
+    "cems-apparelsourcing.com"
+    "cems-yarnandfabric.com"
+    "morocco-dyechem.com"
+    "gosourcing-morocco.com"
+    "sports-sourcingshow.com"
+    "water-exhibition.com"
+    "winter.bd.cems-yarnandfabric.com"
+    "cemscrm.com"
+    "shahidsarwar.com"
+    "meherun.com"
+    "mailblaster.net"
+    "cemsmailer.com"
+    "ejazsarwar.com"
+    "quikads.com.bd"
+    "build-southasia.com"
+    "connect2university.com"
+    "guru.com.bd"
+    "tradazine.com"
+    "connect2email.com"
+    "topbikecar.com"
+    "ic4irb.com"
+    "adsbonline.org"
+    "cemsglobalgroup.nyc"
+    "cems-buildexpo.com"
+    "cems-elexpo.com"
+    "netex.pk"
+)
+
+# Function to convert the date format
+format_date() {
+    # Convert date to the desired format (e.g., "February 30, 2024")
+    date -d "$1" +"%B %d, %Y" 2>/dev/null
+}
+
+# Loop through each domain
+for domain in "${domains[@]}"; do
+    # Get WHOIS information for the domain
+    whois_output=$(whois "$domain")
+
+    # Extract expiration date using grep and awk (adjusting for different formats)
+    expiration_date=$(echo "$whois_output" | grep -i 'Expiration Date\|Registry Expiry Date' | awk -F': ' '{print $2}' | head -n 1)
+
+    # Check if the expiration date was found
+    if [ -z "$expiration_date" ]; then
+        echo "Domain: $domain"
+        echo "Expiration Date: Not Found"
+        echo "---------------------------------"
+        continue
+    fi
+
+    # Format the expiration date
+    formatted_date=$(format_date "$expiration_date")
+
+    # Check if the formatted date is valid
+    if [ -z "$formatted_date" ]; then
+        formatted_date="Invalid date format"
+    fi
+
+    # Print the domain and its formatted expiration date
+    echo "Domain: $domain"
+    echo "Expiration Date: $formatted_date"
+    echo "---------------------------------"
+done
