@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "textechbrazil.com"
+    "nextblock.build"
+    "pixelshaft.com"
+    "askndeliver.net"
+    "amarekusheyboimela.gov.bd"
+    "tenderbangladesh.com"
+    "visitbangladeshnow.com"
+    "sourcefromafrica.com"
+    "ic4irb.org"
+    "shohozkaj.com"
+    "sourcing-bangladesh.com"
+    "rankeredge.net"
+    "quikads.net"
+    "quikads.lk"
+    "quikads.in"
+    "fazyon.com"
+    "banglarutimaker.com"
+    "thynkvegan.net"
+    "bicpen.com.bd"
+    "tstaffs.com"
+    "whichfair.com"
+    "dbtechnologiesbd.com"
+    "aamarcloud.com"
+    "cemsindia.in"
+    "cemschina.cn"
+    "classiads-bd.com"
+    "classiads-india.com"
+    "source-india.in"
+    "sourcing-india.in"
+    "digicardz.me"
+    "dizicard.me"
+    "aamartech.llc"
+    "cems-textileseries.net"
+    "quickpos.app"
+    "cardzin.in"
+    "cardzin.net"
+    "textechmorocco.com"
+    "textechsrilanka.com"
+    "textechbangladesh.com"
+    "agro-bangladesh.com"
+)
+
+# Function to convert the date format
+format_date() {
+    # Convert date to the desired format (e.g., "February 30, 2024")
+    date -d "$1" +"%B %d, %Y" 2>/dev/null
+}
+
+# Loop through each domain
+for domain in "${domains[@]}"; do
+    # Get WHOIS information for the domain
+    whois_output=$(whois "$domain")
+
+    # Extract expiration date using grep and awk (adjusting for different formats)
+    expiration_date=$(echo "$whois_output" | grep -i 'Expiration Date\|Registry Expiry Date' | awk -F': ' '{print $2}' | head -n 1)
+
+    # Check if the expiration date was found
+    if [ -z "$expiration_date" ]; then
+        echo "Domain: $domain"
+        echo "Expiration Date: Not Found"
+        echo "---------------------------------"
+        continue
+    fi
+
+    # Format the expiration date
+    formatted_date=$(format_date "$expiration_date")
+
+    # Check if the formatted date is valid
+    if [ -z "$formatted_date" ]; then
+        formatted_date="Invalid date format"
+    fi
+
+    # Print the domain and its formatted expiration date
+    echo "Domain: $domain"
+    echo "Expiration Date: $formatted_date"
+    echo "---------------------------------"
+done
