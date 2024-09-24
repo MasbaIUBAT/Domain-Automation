@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "goforsuppliers.com"
+    "trydizicard.me"
+    "godizicard.me"
+    "trygosourcing365.com"
+    "power-bangladesh.com"
+    "go4suppliers.com"
+    "sourcing-maroc.com"
+    "sourcing-srilanka.com"
+    "sourcefromsrilanka.com"
+    "sourcefrommarocco.com"
+    "isameforum2023.org"
+    "ss-xpress.com"
+    "brazilfabricsourcing.com"
+    "sourcefrombangladesh.net"
+    "sourcefrombanglades.org"
+    "tuition-guru.com"
+    "bangladesh-export.com"
+    "sourcefrombangladesh.com"
+    "bangladesh-exporters.com"
+    "bangladeshexporters.com"
+    "gosourcing-machinery.com"
+    "source-bangladesh.com"
+    "bangladesh-sme.com"
+    "jobengine.net"
+    "jobengine.us"
+    "classiads.us"
+    "classiads.nyc"
+    "quikads.us"
+    "cems-virtualshow.com"
+    "globalmachineryshow.com"
+    "globalapparelshow.com"
+    "btm247.com"
+    "askndelivers.net"
+    "e-education365.com"
+    "c2sonline.net"
+    "c2sonline.com"
+    "cemsglobalgroup.com"
+    "shebangladesh.net"
+    "gosourcing-denim.com"
+    "gosourcing-africa.com"
+    "gosourcing-southasia.com"
+    "sourcefromethiopia.com"
+    "sourcefromghana.com"
+    "sourcefromafrica.com"
+    "morocco-apparelsourcing.com"
+    "sourcefrommorocco.com"
+    "texapp-forum.com"
+    "gosourcing-ethiopia.com"
+    "gosourcing-ghana.com"
+    "gosourcing-agrochem.com"
+    "gosourcing-nantong.cn"
+    "gosourcing-nantong.com"
+)
+
+# Function to convert the date format
+format_date() {
+    # Convert date to the desired format (e.g., "February 30, 2024")
+    date -d "$1" +"%B %d, %Y" 2>/dev/null
+}
+
+# Loop through each domain
+for domain in "${domains[@]}"; do
+    # Get WHOIS information for the domain
+    whois_output=$(whois "$domain")
+
+    # Extract expiration date using grep and awk (adjusting for different formats)
+    expiration_date=$(echo "$whois_output" | grep -i 'Expiration Date\|Registry Expiry Date' | awk -F': ' '{print $2}' | head -n 1)
+
+    # Check if the expiration date was found
+    if [ -z "$expiration_date" ]; then
+        echo "Domain: $domain"
+        echo "Expiration Date: Not Found"
+        echo "---------------------------------"
+        continue
+    fi
+
+    # Format the expiration date
+    formatted_date=$(format_date "$expiration_date")
+
+    # Check if the formatted date is valid
+    if [ -z "$formatted_date" ]; then
+        formatted_date="Invalid date format"
+    fi
+
+    # Print the domain and its formatted expiration date
+    echo "Domain: $domain"
+    echo "Expiration Date: $formatted_date"
+    echo "---------------------------------"
+done
