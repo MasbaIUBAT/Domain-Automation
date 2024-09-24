@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "domain1.com"
+    "domain2.com"
+    "domain3.com"
+    # Add all your registered domains here
+)
+
+# Email to check
+email="masba_rumi@yahoo.com"
+
+# Count of domains associated with the email
+count=0
+
+# Check each domain
+for domain in "${domains[@]}"; do
+    # Use WHOIS to get domain information
+    whois_output=$(whois "$domain")
+
+    # Check if the email is in the WHOIS output
+    if echo "$whois_output" | grep -q "$email"; then
+        echo "$domain is registered with the email $email."
+        ((count++))
+    else
+        echo "$domain is NOT registered with the email $email."
+    fi
+done
+
+# Summary
+echo "Total domains registered with $email: $count"
