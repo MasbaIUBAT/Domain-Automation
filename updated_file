@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# List of domains to check
+domains=("aamartech.llc" "aamartech.store" "aamartech.us" "digicardz.me" "dizicard.me" "gamedin.net" "gamedin.net" "source-india.in" "sourcing-india.in")
+
+# Function to convert the date format
+format_date() {
+    # Convert date to the desired format
+    date -d "$1" +"%B %d, %Y" | sed 's/ \(.*\) / \1 /'
+}
+
+# Loop through each domain
+for domain in "${domains[@]}"; do
+    # Get WHOIS information
+    whois_output=$(whois "$domain")
+
+    # Extract expiration date using grep and awk
+    expiration_date=$(echo "$whois_output" | grep -i 'Expiration Date\|Registry Expiry Date' | awk -F': ' '{print $2}' | head -n 1)
+
+    # Format the expiration date
+    formatted_date=$(format_date "$expiration_date")
+
+    # Print the domain and its expiration date
+    echo "Domain: $domain"
+    echo "Expiration Date: $formatted_date"
+    echo "---------------------------------"
+done
