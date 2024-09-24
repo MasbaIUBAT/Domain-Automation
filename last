@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "gosourcing-srilanka.com"
+    "gosourcing-india.com"
+    "gosourcing-indonesia.com"
+    "cems-foodagro.com"
+    "conexpobangladesh.com"
+    "cemsevents.com"
+    "cems-exhibitions.com"
+    "cemsbangladesh.com"
+    "cemsonline.net"
+    "newtop-global.com"
+    "bdsolar.com"
+)
+
+# Function to fetch domain expiration date using WHOIS
+check_domain_expiry() {
+    domain=$1
+    # Get expiration date from WHOIS data
+    expiry_date=$(whois $domain | grep -i 'Expiry Date\|Expiration Date' | awk '{print $NF}' | head -1)
+    
+    if [[ -n "$expiry_date" ]]; then
+        # Convert expiration date to a readable format
+        readable_date=$(date -d "$expiry_date" '+%B %d, %Y')
+        echo "$domain expires on: $readable_date"
+    else
+        echo "Could not fetch expiration date for $domain"
+    fi
+}
+
+# Loop through the list of domains and check their expiration dates
+for domain in "${domains[@]}"; do
+    check_domain_expiry "$domain"
+done
