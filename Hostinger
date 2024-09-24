@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "asia-sourcing.com"
+    "cems-sportssourcing.com"
+    "bestofindiaexpo.in"
+    "aamartech.com"
+    "bizlinks.com.bd"
+    "foodoclock.com.bd"
+    "shebangladesh.com"
+    "cems-virtualshow.com"
+    "quikorder.app"
+    "gosourcing.llc"
+    "connect2school.net"
+    "eemab.com"
+    "gamedin.net"
+    "cems-printingpackaging.com"
+    "cemsonline.com"
+    "supernova365.com"
+    "letskonnect.net"
+    "cems-motorshow.com"
+    "viewbangladesh.com"
+    "cemsonline.org"
+    "cemssuite360.com"
+    "boimelalive.com"
+    "cems-buildbd.com"
+    "globalsourcingshow.com"
+    "bangladeshmotorsports.com"
+    "cemssuite.com"
+    "meditexonline.com"
+    "beautyfitnessfair.com"
+    "techtaze.com"
+    "amsl.com.bd"
+    "askndelivers.com"
+    "cems-denimshow.com"
+    "pharmabangladesh.com"
+    "net-ex.net"
+    "cems-meditex.com"
+    "goproperty365.com"
+    "cems-foodpack.com"
+    "jointhexpo.com"
+    "findthexpo.com"
+    "micebangladesh.com"
+    "cems-suite.com"
+    "cems-elexpo.com"
+    "cems-buildexpo.com"
+    "exhibitionsnow.net"
+    "cemsglobalgroup.nyc"
+    "adsbonline.org"
+    "ic4irb.com"
+    "cems-registrations.com"
+    "exhibitionsnow.org"
+    "topbikecar.com"
+    "connect2email.com"
+    "tradazine.com"
+    "guru.com.bd"
+    "connect2university.com"
+    "build-southasia.com"
+    "quikads.com.bd"
+    "joinexhibitions.com"
+    "cemsmailer.com"
+    "mailblaster.net"
+    "cemscrm.com"
+)
+
+# Function to convert the date format
+format_date() {
+    # Convert date to the desired format
+    date -d "$1" +"%B %d, %Y" 2>/dev/null
+}
+
+# Loop through each domain
+for domain in "${domains[@]}"; do
+    # Get WHOIS information
+    whois_output=$(whois "$domain")
+
+    # Extract expiration date using grep and awk
+    expiration_date=$(echo "$whois_output" | grep -i 'Expiration Date\|Registry Expiry Date' | awk -F': ' '{print $2}' | head -n 1)
+
+    # Format the expiration date
+    formatted_date=$(format_date "$expiration_date")
+
+    # Print the domain and its expiration date
+    echo "Domain: $domain"
+    echo "Expiration Date: $formatted_date"
+    echo "---------------------------------"
+done
