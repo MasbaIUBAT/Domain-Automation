@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "aamar.tech"
+    "aamartechllc.com"
+    "bd.cems-dyechem.com"
+    "bd-lighting.com"
+    "br.cems-dyechem.com"
+    "build-bangladesh.com"
+    "cems-commercialautoshow.com"
+    "cems-directory.com"
+    "cems-lightingexpo.com"
+    "cems-realestateexpo.com"
+    "classiads.com"
+    "e-registrations.com"
+    "exhibitor-pass.com"
+    "lk.cems-dyechem.com"
+    "morocco-sourcingshow.com"
+    "cems-autopartsshow.com"
+    "cems-powerseries.com"
+    "cems-textech.com"
+    "cems-textileseries.com"
+    "dhakamotorshow.com"
+    "powerbangladesh.com"
+    "textech-brazil.com"
+    "textech-srilanka.com"
+    "bd.cems-yarnandfabric.com"
+    "br.cems-yarnandfabric.com"
+    "cems-apparelsourcing.com"
+    "cems-solarexpo.com"
+    "cems-yarnandfabric.com"
+    "morocco-dyechem.com"
+    "dhakabikeshow.com"
+    "gosourcing-morocco.com"
+    "lk.cems-yarnandfabric.com"
+    "morocco-sourcingshow.com"
+    "sports-sourcingshow.com"
+    "water-exhibition.com"
+    "winter.bd.cems-yarnandfabric.com"
+    "cems-global.com"
+)
+
+# Function to convert the date format
+format_date() {
+    # Convert date to the desired format
+    date -d "$1" +"%B %d, %Y" 2>/dev/null
+}
+
+# Loop through each domain
+for domain in "${domains[@]}"; do
+    # Get WHOIS information
+    whois_output=$(whois "$domain")
+
+    # Extract expiration date using grep and awk
+    expiration_date=$(echo "$whois_output" | grep -i 'Expiration Date\|Registry Expiry Date' | awk -F': ' '{print $2}' | head -n 1)
+
+    # Format the expiration date
+    formatted_date=$(format_date "$expiration_date")
+
+    # Print the domain and its expiration date
+    echo "Domain: $domain"
+    echo "Expiration Date: $formatted_date"
+    echo "---------------------------------"
+done
