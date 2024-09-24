@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# List of domains to check
+domains=(
+    "aamartech.llc"
+    "micebangladesh.com"
+    "joinexhibitions.com"
+    "exhibitionsnow.org"
+    "cems-registrations.com"
+    "exhibitionsnow.net"
+    "findthexpo.com"
+    "jointhexpo.com"
+    "net-ex.net"
+    "netex-global.com"
+    "cems-suite.com"
+    "aamarcard.com"
+    "trycardzin.com"
+    "cems-forms.com"
+    "cems-directory.com"
+    "cemsreg.com"
+    "cems-reg.com"
+    "cardzin.me"
+    "zyncard.in"
+    "zyncard.xyz"
+    "zyncard.net"
+    "zyncard.me"
+    "aamar360solutions.com"
+    "aamar360.io"
+    "aamar360.com"
+    "aamarlabs.com"
+    "quikpower.io"
+    "aamarpower.io"
+    "aamarpower.com"
+    "zyncard.com"
+    "digicard365.com"
+    "digicard365.me"
+    "asia-sourcing.com"
+    "cems-sportssourcing.com"
+    "bestofindiaexpo.in"
+    "aamartech.com"
+    "bizlinks.com.bd"
+)
+
+# Function to convert the date format
+format_date() {
+    # Convert date to the desired format (e.g., "February 30, 2024")
+    date -d "$1" +"%B %d, %Y" 2>/dev/null
+}
+
+# Loop through each domain
+for domain in "${domains[@]}"; do
+    # Get WHOIS information for the domain
+    whois_output=$(whois "$domain")
+
+    # Extract expiration date using grep and awk (adjusting for different formats)
+    expiration_date=$(echo "$whois_output" | grep -i 'Expiration Date\|Registry Expiry Date' | awk -F': ' '{print $2}' | head -n 1)
+
+    # Check if the expiration date was found
+    if [ -z "$expiration_date" ]; then
+        echo "Domain: $domain"
+        echo "Expiration Date: Not Found"
+        echo "---------------------------------"
+        continue
+    fi
+
+    # Format the expiration date
+    formatted_date=$(format_date "$expiration_date")
+
+    # Check if the formatted date is valid
+    if [ -z "$formatted_date" ]; then
+        formatted_date="Invalid date format"
+    fi
+
+    # Print the domain and its formatted expiration date
+    echo "Domain: $domain"
+    echo "Expiration Date: $formatted_date"
+    echo "---------------------------------"
+done
